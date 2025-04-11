@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Outer Wilds Fan Site</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body>
+    <div id="threejs-container"></div>
+
+    <!-- Audio elements -->
+    <audio id="ambient-sound" loop>
+        <source src="./sound/space.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="explosion-sound">
+        <source src="./sound/boom.mp3" type="audio/mpeg">
+    </audio>
+
+    <button id="toggle-ui" class="toggle-button">
+        <i class="fas fa-eye"></i>
+    </button>
+
+    <div id="audio-controls" class="audio-controls">
+        <button id="toggle-audio" class="toggle-button">
+            <i class="fas fa-volume-up"></i>
+        </button>
+        <div class="volume-controls">
+            <div class="volume-slider">
+                <label for="ambient-volume">Ambient</label>
+                <input type="range" id="ambient-volume" min="0" max="1" step="0.1" value="0.5">
+            </div>
+            <div class="volume-slider">
+                <label for="explosion-volume">Explosion</label>
+                <input type="range" id="explosion-volume" min="0" max="1" step="0.1" value="0.3">
+            </div>
+        </div>
+    </div>
+
+    <div id="ui-container">
+        <header>
+            <h1>Outer Wilds Explorer</h1>
+            <p>Journey through the mysteries of the Outer Wilds universe</p>
+        </header>
+
+        <main>
+            <section class="solar-system">
+                <h2>The Solar System</h2>
+                <p>Explore the unique and mysterious planets of the Outer Wilds system, each with its own secrets and
+                    dangers.</p>
+                <div class="planet-info">
+                    <div class="planet-card">
+                        <img src="./images/timber-hearth.webp" alt="Timber Hearth">
+                        <h3>Timber Hearth</h3>
+                        <p>Home to the Hearthian civilization, this lush planet features dense forests, winding rivers,
+                            and the iconic Timber Hearth village.</p>
+                    </div>
+                    <div class="planet-card">
+                        <img src="./images/brittle-hollow.webp" alt="Brittle Hollow">
+                        <h3>Brittle Hollow</h3>
+                        <p>A fragile planet with a hollow interior, slowly crumbling into its black hole core. Home to
+                            the ancient Nomai ruins.</p>
+                    </div>
+                    <div class="planet-card">
+                        <img src="./images/giants-deep.webp" alt="Giant's Deep">
+                        <h3>Giant's Deep</h3>
+                        <p>A water-covered planet with massive cyclones and mysterious islands floating in its
+                            atmosphere.</p>
+                    </div>
+                    <div class="planet-card">
+                        <img src="./images/dark-bramble.webp" alt="Dark Bramble">
+                        <h3>Dark Bramble</h3>
+                        <p>A dangerous planet covered in fog and filled with interconnected pockets of space. Home to
+                            the terrifying Anglerfish.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="nomai">
+                <h2>The Nomai</h2>
+                <div class="nomai-content">
+                    <img src="./images/nomai-ruins.webp" alt="Nomai Ruins">
+                    <div class="nomai-text">
+                        <p>The Nomai were an ancient, highly advanced civilization that once inhabited the Outer Wilds
+                            system. Their ruins and technology can be found throughout the solar system, telling the
+                            story of their search for the Eye of the Universe.</p>
+                        <p>Their writing system, architecture, and technology reveal a culture focused on scientific
+                            discovery and exploration.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="time-loop">
+                <h2>The Time Loop</h2>
+                <div class="time-loop-content">
+                    <div class="time-loop-text">
+                        <p>Every 22 minutes, the sun goes supernova, resetting the universe to the beginning of the
+                            loop. This mysterious phenomenon is tied to the Ash Twin Project and the Nomai's search for
+                            the Eye of the Universe.</p>
+                        <p>As an explorer, you must use this time loop to your advantage, learning from each cycle to
+                            uncover the secrets of the solar system.</p>
+                    </div>
+                    <img src="./images/supernova.webp" alt="Supernova">
+                </div>
+            </section>
+
+            <section class="exploration-tips">
+                <h2>Exploration Tips</h2>
+                <div class="tips-grid">
+                    <div class="tip-card">
+                        <h3>Ship Controls</h3>
+                        <p>Master the art of zero-gravity navigation. Remember to use your landing camera and match
+                            velocity when approaching planets.</p>
+                    </div>
+                    <div class="tip-card">
+                        <h3>Time Management</h3>
+                        <p>Plan your exploration carefully within the 22-minute time loop. Some events only occur at
+                            specific times.</p>
+                    </div>
+                    <div class="tip-card">
+                        <h3>Signal Tracking</h3>
+                        <p>Use your signalscope to track important signals and locate points of interest throughout the
+                            system.</p>
+                    </div>
+                    <div class="tip-card">
+                        <h3>Environmental Hazards</h3>
+                        <p>Be aware of each planet's unique dangers, from crushing gravity to deadly creatures and
+                            extreme temperatures.</p>
+                    </div>
+                </div>
+                <div class="external-links-container">
+                    <a href="https://www.mobiusdigitalgames.com/outer-wilds.html" target="_blank"
+                        class="external-link-button">Visit Mobius Digital</a>
+                    <a href="https://store.steampowered.com/app/753640/Outer_Wilds/" target="_blank"
+                        class="external-link-button">View on Steam</a>
+                </div>
+        </main>
+        </section>
+
+
+        <footer>
+            <p>Created for Outer Wilds fans by an Outer Wilds fan 🧡</p>
+            <a href="https://pepamraz.cz" target="_blank">pepamraz.cz 💻</a>
+        </footer>
+    </div>
+
+    <script type="module" src="script.js"></script>
+</body>
+
+</html>

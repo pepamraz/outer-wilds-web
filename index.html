@@ -19,23 +19,31 @@
     <audio id="explosion-sound">
         <source src="./sound/boom.mp3" type="audio/mpeg">
     </audio>
+    <audio id="ost" loop>
+        <source src="./sound/ost.mp3" type="audio/mpeg">
+    </audio>
 
     <button id="toggle-ui" class="toggle-button">
         <i class="fas fa-eye"></i>
     </button>
 
-    <div id="audio-controls" class="audio-controls">
-        <button id="toggle-audio" class="toggle-button">
+    <!-- Wrapper for audio controls -->
+    <div class="audio-wrapper">
+        <button id="toggle-audio" class="audio-toggle-button">
             <i class="fas fa-volume-up"></i>
         </button>
         <div class="volume-controls">
-            <div class="volume-slider">
+            <div class="volume-control">
                 <label for="ambient-volume">Ambient</label>
-                <input type="range" id="ambient-volume" min="0" max="1" step="0.1" value="0.5">
+                <input type="range" id="ambient-volume" min="0" max="1" step="0.01" value="0.2">
             </div>
-            <div class="volume-slider">
+            <div class="volume-control">
                 <label for="explosion-volume">Explosion</label>
-                <input type="range" id="explosion-volume" min="0" max="1" step="0.1" value="0.3">
+                <input type="range" id="explosion-volume" min="0" max="1" step="0.01" value="0.2">
+            </div>
+            <div class="volume-control">
+                <label for="ost-volume">OST</label>
+                <input type="range" id="ost-volume" min="0" max="1" step="0.01" value="0.05">
             </div>
         </div>
     </div>

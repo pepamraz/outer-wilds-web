@@ -1,3 +1,10 @@
+@font-face {
+	font-family: 'ITC Serif Gothic';
+	src: url('font/itc-serif-gothic-regular.otf') format('opentype');
+	font-weight: normal;
+	font-style: normal;
+}
+
 /* Reset default styles */
 * {
 	margin: 0;
@@ -6,7 +13,7 @@
 }
 
 body {
-	font-family: 'Arial', sans-serif;
+	font-family: 'ITC Serif Gothic', 'Arial', sans-serif;
 	background-color: #0a0a0a;
 	color: #ffffff;
 	overflow: hidden;
@@ -93,51 +100,61 @@ footer {
 	line-height: 1.6;
 }
 
-/* Audio controls styles */
-#audio-controls {
+/* Audio controls wrapper */
+.audio-wrapper {
 	position: fixed;
 	top: 1rem;
-	right: 5rem;
+	right: 5rem; /* Position sound icon to the left of the eye icon */
+	z-index: 1001;
+	padding-bottom: 5px; /* Add padding to bridge gap for hover */
+    padding-left: 100px;
+}
+
+/* Audio toggle button (formerly #audio-controls) */
+.audio-toggle-button {
 	background-color: rgba(0, 0, 0, 0.7);
 	border: none;
 	color: #ff7d25;
 	padding: 0;
 	border-radius: 50%;
 	cursor: pointer;
-	z-index: 1001;
 	transition: all 0.3s ease;
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	width: 40px;
 	height: 40px;
+	position: relative; /* Ensure it stays within the wrapper flow */
+	z-index: 1002; /* Keep button above dropdown */
 }
 
-#audio-controls:hover {
+.audio-toggle-button:hover {
 	background-color: rgba(255, 125, 37, 0.2);
 }
 
-#audio-controls i {
+.audio-toggle-button i {
 	font-size: 1.2rem;
 	line-height: 1;
 }
 
 .volume-controls {
 	position: absolute;
-	top: 100%;
-	right: 0;
+	top: calc(100% - 5px); /* Position below the button with a small gap */
+	right: 0%; /* Align to the right of the wrapper */
 	background-color: rgba(0, 0, 0, 0.8);
 	border: 1px solid rgba(255, 255, 255, 0.1);
 	border-radius: 5px;
 	padding: 1rem;
-	margin-top: 0.5rem;
+	/* margin-top: 0.5rem; */ /* Removed margin-top, using top positioning */
 	display: none;
 	min-width: 200px;
-	transform: translateX(50%);
-	right: 50%;
+	transform: translateX(50px); /* Reset transform */
+	/* right: 50%; */ /* Removed centering */
+	z-index: 1001; /* Ensure it's above other elements but below button if needed */
 }
 
-#audio-controls:hover .volume-controls {
+/* Show controls when hovering the wrapper */
+.audio-wrapper:hover .volume-controls {
 	display: block;
 }
 
@@ -188,7 +205,7 @@ footer {
 .toggle-button {
 	position: fixed;
 	top: 1rem;
-	right: 1rem;
+	right: 1rem; /* Position eye icon on the far right */
 	background-color: rgba(0, 0, 0, 0.7);
 	border: none;
 	color: #ff7d25;
@@ -202,7 +219,7 @@ footer {
 	width: 40px;
 	height: 40px;
 	border-radius: 100%;
-	border: 1px solid;
+	/* border: 1px solid; */ /* Removed duplicate border */
 }
 
 .toggle-button:hover {
@@ -465,13 +482,13 @@ footer {
 	border: none;
 }
 
-a{
+footer a{
     color: #16b5ff;
     text-decoration: none;
     transition: color 0.3s ease;
 }
 
-a:hover{
+footer a:hover{
     color: #98f2fc;
 }
 

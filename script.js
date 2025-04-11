@@ -8,11 +8,12 @@ let spaceship;
 let explosionParticles = [];
 let isExploding = false;
 let explosionTime = 0;
-let ambientSound, explosionSound;
+let ambientSound, explosionSound, ostAudio;
 let isUserControlling = false;
 let autoOrbitSpeed = 0.2;
 let orbitRadius = 30;
 let orbitHeight = 20;
+let ambientVolume, explosionVolume, ostVolume;
 
 function createSunTexture() {
     const canvas = document.createElement('canvas');
@@ -276,6 +277,41 @@ function updateExplosion(explosion, deltaTime) {
     return true;
 }
 
+function initAudio() {
+    ambientSound = document.getElementById('ambient-sound');
+    explosionSound = document.getElementById('explosion-sound');
+    ostAudio = document.getElementById('ost');
+
+    ambientVolume = document.getElementById('ambient-volume');
+    explosionVolume = document.getElementById('explosion-volume');
+    ostVolume = document.getElementById('ost-volume');
+
+    if (ambientSound && ambientVolume) {
+        ambientSound.volume = ambientVolume.value;
+        ambientVolume.addEventListener('input', (event) => {
+            ambientSound.volume = event.target.value;
+        });
+        ambientSound.play().catch(e => console.log("Ambient sound playback failed:", e));
+        ambientSound.loop = true;
+    }
+
+    if (explosionSound && explosionVolume) {
+        explosionSound.volume = explosionVolume.value;
+        explosionVolume.addEventListener('input', (event) => {
+            explosionSound.volume = event.target.value;
+        });
+    }
+
+    if (ostAudio && ostVolume) {
+        ostAudio.volume = ostVolume.value;
+        ostVolume.addEventListener('input', (event) => {
+            ostAudio.volume = event.target.value;
+        });
+        // Attempt to play OST - may be blocked by browser until user interaction
+        ostAudio.play().catch(e => console.log("OST playback failed, user interaction might be required:", e)); 
+    }
+}
+
 function init() {
     // Get the container
     const container = document.getElementById('threejs-container');
@@ -484,144 +520,116 @@ function init() {
     spaceship.position.set(15, 0, 0);
     spaceship.lookAt(0, 0, 0); // Look at the sun
 
-    // Initialize audio with better error handling
-    try {
-        ambientSound = document.getElementById('ambient-sound');
-        explosionSound = document.getElementById('explosion-sound');
-
-        if (!ambientSound || !explosionSound) {
-            console.error('Audio elements not found in the DOM');
-            return;
-        }
-
-        // Set initial volume explicitly
-        ambientSound.volume = 0.5; // Increased from 0.3 to 0.5
-        explosionSound.volume = 0.3; // Lowered from 0.7 to 0.3 to be less startling
-
-        // Debug logging
-        console.log('Audio elements found:', {
-            ambientSound: ambientSound,
-            explosionSound: explosionSound,
-            ambientVolume: ambientSound.volume,
-            explosionVolume: explosionSound.volume
-        });
-
-        // Add event listeners for audio loading
-        ambientSound.addEventListener('loadeddata', () => {
-            console.log('Ambient sound loaded, attempting to play...');
-            ambientSound.play().then(() => {
-                console.log('Ambient sound playing successfully');
-            }).catch(error => {
-                console.error('Ambient sound playback failed:', error);
-            });
-        });
-
-        ambientSound.addEventListener('error', (e) => {
-            console.error('Ambient sound loading error:', e);
-        });
-
-        explosionSound.addEventListener('loadeddata', () => {
-            console.log('Explosion sound loaded successfully');
-        });
-
-        explosionSound.addEventListener('error', (e) => {
-            console.error('Explosion sound loading error:', e);
-        });
-
-        // Try to play ambient sound immediately
-        const playPromise = ambientSound.play();
-        if (playPromise !== undefined) {
-            playPromise.then(() => {
-                console.log('Ambient sound started playing');
-            }).catch(error => {
-                console.error('Initial ambient sound playback failed:', error);
-                // Try to play again after user interaction
-                document.addEventListener('click', () => {
-                    console.log('Attempting to play audio after user interaction');
-                    ambientSound.play().then(() => {
-                        console.log('Audio started playing after user interaction');
-                    }).catch(e => console.error('Retry playback failed:', e));
-                }, { once: true });
-            });
-        }
-
-    } catch (error) {
-        console.error('Error initializing audio:', error);
-    }
+    initAudio(); // Initialize audio elements and controls
 
     // Initialize audio controls
     const toggleAudioButton = document.getElementById('toggle-audio');
     const audioControls = document.getElementById('audio-controls');
     const ambientVolumeSlider = document.getElementById('ambient-volume');
     const explosionVolumeSlider = document.getElementById('explosion-volume');
+    const ostVolumeSlider = document.getElementById('ost-volume'); // Get OST slider
     let isAudioMuted = false;
     let previousAmbientVolume = 0.5; // Store previous volume levels
     let previousExplosionVolume = 0.3;
+    let previousOstVolume = 0.5; // Store previous OST volume
 
     // Handle volume sliders
-    ambientVolumeSlider.addEventListener('input', (e) => {
-        const volume = parseFloat(e.target.value);
-        if (volume === 0) {
-            ambientSound.muted = true;
-            ambientSound.pause();
-        } else {
-            ambientSound.muted = false;
-            ambientSound.volume = volume;
-            previousAmbientVolume = volume; // Update previous volume
-            if (ambientSound.paused) {
-                ambientSound.play().catch(error => {
-                    console.error('Ambient sound playback failed:', error);
-                });
+    if (ambientSound && ambientVolumeSlider) { // Check if slider exists
+        ambientVolumeSlider.addEventListener('input', (e) => {
+            const volume = parseFloat(e.target.value);
+            if (volume === 0) {
+                ambientSound.muted = true;
+                ambientSound.pause();
+            } else {
+                ambientSound.muted = false;
+                ambientSound.volume = volume;
+                previousAmbientVolume = volume; // Update previous volume
+                if (ambientSound.paused) {
+                    ambientSound.play().catch(error => {
+                        console.error('Ambient sound playback failed:', error);
+                    });
+                }
             }
-        }
-    });
+        });
+    }
 
-    explosionVolumeSlider.addEventListener('input', (e) => {
-        const volume = parseFloat(e.target.value);
-        if (volume === 0) {
-            explosionSound.muted = true;
-            explosionSound.pause();
-        } else {
-            explosionSound.muted = false;
-            explosionSound.volume = volume;
-            previousExplosionVolume = volume; // Update previous volume
-        }
-    });
+    if (explosionSound && explosionVolumeSlider) { // Check if slider exists
+        explosionVolumeSlider.addEventListener('input', (e) => {
+            const volume = parseFloat(e.target.value);
+            if (volume === 0) {
+                explosionSound.muted = true;
+                // Don't pause explosion sound, it's short-lived
+            } else {
+                explosionSound.muted = false;
+                explosionSound.volume = volume;
+                previousExplosionVolume = volume; // Update previous volume
+            }
+        });
+    }
+
+    if (ostAudio && ostVolumeSlider) { // Check if slider exists
+        ostVolumeSlider.addEventListener('input', (e) => {
+            const volume = parseFloat(e.target.value);
+            if (volume === 0) {
+                ostAudio.muted = true;
+                ostAudio.pause();
+            } else {
+                ostAudio.muted = false;
+                ostAudio.volume = volume;
+                previousOstVolume = volume; // Update previous volume
+                if (ostAudio.paused) {
+                    ostAudio.play().catch(error => {
+                        console.error('OST playback failed:', error);
+                    });
+                }
+            }
+        });
+    }
 
     // Toggle audio mute
     toggleAudioButton.addEventListener('click', () => {
         isAudioMuted = !isAudioMuted;
         if (isAudioMuted) {
             // Store current volumes before muting
-            previousAmbientVolume = ambientSound.volume;
-            previousExplosionVolume = explosionSound.volume;
+            if (ambientSound) previousAmbientVolume = ambientSound.volume;
+            if (explosionSound) previousExplosionVolume = explosionSound.volume;
+            if (ostAudio) previousOstVolume = ostAudio.volume;
             
-            ambientSound.muted = true;
-            ambientSound.pause();
-            explosionSound.muted = true;
-            explosionSound.pause();
+            if (ambientSound) { ambientSound.muted = true; ambientSound.pause(); }
+            if (explosionSound) explosionSound.muted = true; // Don't pause short sounds
+            if (ostAudio) { ostAudio.muted = true; ostAudio.pause(); }
+            
             toggleAudioButton.innerHTML = '<i class="fas fa-volume-mute"></i>';
             // Update sliders to show muted state
-            ambientVolumeSlider.value = 0;
-            explosionVolumeSlider.value = 0;
+            if (ambientVolumeSlider) ambientVolumeSlider.value = 0;
+            if (explosionVolumeSlider) explosionVolumeSlider.value = 0;
+            if (ostVolumeSlider) ostVolumeSlider.value = 0;
         } else {
-            ambientSound.muted = false;
-            explosionSound.muted = false;
+            if (ambientSound) ambientSound.muted = false;
+            if (explosionSound) explosionSound.muted = false;
+            if (ostAudio) ostAudio.muted = false;
             
             // Restore previous volumes
-            ambientSound.volume = previousAmbientVolume;
-            explosionSound.volume = previousExplosionVolume;
+            if (ambientSound) ambientSound.volume = previousAmbientVolume;
+            if (explosionSound) explosionSound.volume = previousExplosionVolume;
+            if (ostAudio) ostAudio.volume = previousOstVolume;
             
             // Update sliders to show actual volumes
-            ambientVolumeSlider.value = previousAmbientVolume;
-            explosionVolumeSlider.value = previousExplosionVolume;
+            if (ambientVolumeSlider) ambientVolumeSlider.value = previousAmbientVolume;
+            if (explosionVolumeSlider) explosionVolumeSlider.value = previousExplosionVolume;
+            if (ostVolumeSlider) ostVolumeSlider.value = previousOstVolume;
             
             toggleAudioButton.innerHTML = '<i class="fas fa-volume-up"></i>';
             
             // Resume playback if volumes are not zero
-            if (previousAmbientVolume > 0) {
+            if (ambientSound && previousAmbientVolume > 0 && ambientSound.paused) {
                 ambientSound.play().catch(error => {
                     console.error('Ambient sound playback failed:', error);
+                });
+            }
+            if (ostAudio && previousOstVolume > 0 && ostAudio.paused) {
+                ostAudio.play().catch(error => {
+                    console.error('OST playback failed:', error);
                 });
             }
         }
